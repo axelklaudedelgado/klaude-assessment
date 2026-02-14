@@ -8,7 +8,19 @@ class ShopifyOAuthService
 {
     public function isValidShopDomain(?string $shop): bool
     {
-        return true;
+        $name = trim(strtolower($shop ?? ''));
+        
+        $name = preg_replace("/\A(https?\:\/\/)/", '', $name);
+        
+        if (strpos($name, ".") === false) {
+            $name .= '.myshopify.com';
+        }
+        
+        if (preg_match("/\A[a-zA-Z0-9][a-zA-Z0-9\-]*\.(myshopify\.com|myshopify\.io)\z/", $name)) {
+            return true;
+        }
+        
+        return false;
     }
 
     public function generateState(): string
