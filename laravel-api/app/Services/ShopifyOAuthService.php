@@ -25,7 +25,7 @@ class ShopifyOAuthService
 
     public function generateState(): string
     {
-        return '';
+        return bin2hex(random_bytes(32));
     }
 
     public function buildAuthorizationUrl(string $shop, string $state, string $clientId, string $scope, string $redirectUri): string

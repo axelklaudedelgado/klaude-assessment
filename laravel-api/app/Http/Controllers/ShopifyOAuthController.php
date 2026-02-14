@@ -21,6 +21,13 @@ class ShopifyOAuthController extends Controller
         if (!$this->service->isValidShopDomain($shop)) {
             return response()->json(['error' => 'Invalid shop domain.'], 400);  
         }
+
+        $state = $this->service->generateState();
+        
+        session([
+            'oauth_state' => $state,
+            'oauth_shop' => $shop,
+        ]);
     }
 
     public function callback(Request $request)
