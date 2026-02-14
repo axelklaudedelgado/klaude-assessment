@@ -28,6 +28,16 @@ class ShopifyOAuthController extends Controller
             'oauth_state' => $state,
             'oauth_shop' => $shop,
         ]);
+
+        $authUrl = $this->service->buildAuthorizationUrl(
+            $shop,
+            $state,
+            config('shopify.api_key'),
+            config('shopify.scopes'),
+            config('shopify.oauth.redirect_uri')
+        );
+
+        return redirect($authUrl);
     }
 
     public function callback(Request $request)

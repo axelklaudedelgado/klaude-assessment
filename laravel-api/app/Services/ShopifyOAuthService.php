@@ -30,7 +30,14 @@ class ShopifyOAuthService
 
     public function buildAuthorizationUrl(string $shop, string $state, string $clientId, string $scope, string $redirectUri): string
     {
-        return '';
+        $params = [
+            'client_id' => $clientId,
+            'scope' => $scope,
+            'redirect_uri' => $redirectUri,
+            'state' => $state,
+        ];
+        
+        return "https://{$shop}/admin/oauth/authorize?" . http_build_query($params);
     }
 
     public function verifyHmac(Request $request, string $secret): bool
