@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Services\ShopifyOAuthService;
-
+use App\Models\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -80,5 +80,24 @@ class ShopifyOAuthController extends Controller
             Log::error('Token exchange failed', ['shop' => $shop, 'error' => $e->getMessage()]);
             return response()->json(['error' => 'Token exchange failed'], 500);
         }
+
+        Shop::updateOrCreate(
+            ['shop_domain' => $shop],
+            ['access_token' => $token, 
+                    'is_active' => true
+            ]
+        );
+
+        session()->forget(['oauth_state', 'oauth_shop']);
+
+        Log::info('OAuth completed successfully', [
+            'shop' => $shop,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Installation successful',
+            'shop' => $shop
+        ]);
     }
 }
