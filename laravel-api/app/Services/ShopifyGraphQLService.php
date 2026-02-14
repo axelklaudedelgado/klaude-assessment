@@ -16,6 +16,29 @@ class ShopifyGraphQLService
         $this->accessToken = $shop->access_token;
     }
 
+    public function query(string $query, array $variables = []): array
+    {
+        $response = Http::withHeaders([
+            'X-Shopify-Access-Token' => $this->accessToken,
+            'Content-Type' => 'application/json',
+        ])->post($this->getApiPath(), [
+            'query' => $query,
+            'variables' => $variables,
+        ]);
+
+        if ($response->failed()) {
+            throw new \Exception('GraphQL request failed');
+        }
+
+        $body = $response->json();
+
+        if (isset($body['errors'])) {
+            throw new \Exception('GraphQL errors occurred');
+        }
+
+        return $body['data'];
+    }
+
     protected function getApiPath(): string
     {
         $version = config('shopify.api_version');
