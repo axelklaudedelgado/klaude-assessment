@@ -156,4 +156,41 @@ class ShopifyGraphQLService
             'limit' => $limit,
         ]);
     }
+
+    public function fetchOrders(?string $cursor = null, int $limit = 50, ?string $since = null): array
+    {
+        $query = <<<'GRAPHQL'
+        query GetOrders($cursor: String, $limit: Int!, $query: String) {
+          orders(first: $limit, after: $cursor, query: $query) {
+            edges {
+              cursor
+              node {
+                id
+                name
+                totalPriceSet {
+                  shopMoney {
+                    amount
+                  }
+                }
+                displayFinancialStatus
+                displayFulfillmentStatus
+                createdAt
+              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          }
+        }
+        GRAPHQL;
+
+        $queryString = $since ? "created_at:>={$since}" : null;
+
+        return $this->query($query, [
+            'cursor' => $cursor,
+            'limit' => $limit,
+            'query' => $queryString,
+        ]);
+    }
 }
