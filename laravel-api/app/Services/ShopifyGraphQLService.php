@@ -59,6 +59,10 @@ class ShopifyGraphQLService
                     $attempt++;
                     continue;
                 }
+
+                if ($statusCode >= 400) {
+                    throw new \Exception("HTTP error {$statusCode}");
+                }
         
                 $body = $response->json();
         
@@ -67,6 +71,7 @@ class ShopifyGraphQLService
                 }
         
                 return $body['data'];
+                
             } catch (\Exception $e) {
                 if ($attempt >= $this->maxRetries) {
                     throw new \Exception("Max retries exceeded: " . $e->getMessage());
