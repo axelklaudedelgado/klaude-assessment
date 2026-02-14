@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class ShopifyOAuthService
 {
@@ -61,6 +62,21 @@ class ShopifyOAuthService
 
     public function exchangeCodeForToken(string $shop, string $code, string $clientId, string $clientSecret): string
     {
-        return '';
+        $response = Http::post("https://{$shop}/admin/oauth/access_token", [
+            'client_id' => $clientId,
+            'client_secret' => $clientSecret,
+            'code' => $code,
+        ]);
+
+        if ($response->failed()) {
+            throw new \Exception('Token exchange failed: ' . $response->body());
+        }
+
+        $data = $response->json();
+        if (!isset($data['access_token'])) {
+            throw new \Exception('No access token received');
+        }
+                
+        return $response['access_token'];
     }
 }

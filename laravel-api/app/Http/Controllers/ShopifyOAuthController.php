@@ -68,5 +68,17 @@ class ShopifyOAuthController extends Controller
             ]);
             return response()->json(['error' => 'HMAC verification failed'], 403);
         }
+
+        try {
+            $token = $this->service->exchangeCodeForToken(
+                $shop,
+                $request->input('code'),
+                config('shopify.api_key'),
+                config('shopify.api_secret')
+            );
+        } catch (\Exception $e) {
+            Log::error('Token exchange failed', ['shop' => $shop, 'error' => $e->getMessage()]);
+            return response()->json(['error' => 'Token exchange failed'], 500);
+        }
     }
 }
