@@ -42,7 +42,21 @@ class ShopifyOAuthService
 
     public function verifyHmac(Request $request, string $secret): bool
     {
-        return false;
+        $hmac = $request->input('hmac');
+        if (!$hmac) return false;
+
+        $params = $request->except(['hmac', 'signature']);
+        ksort($params);
+
+        $queryString = http_build_query($params);
+
+        $calculatedHmac = hash_hmac(
+            'sha256',
+            $queryString,
+            $secret,
+        );
+
+        return hash_equals($calculatedHmac, $hmac);
     }
 
     public function exchangeCodeForToken(string $shop, string $code, string $clientId, string $clientSecret): string

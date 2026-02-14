@@ -60,5 +60,13 @@ class ShopifyOAuthController extends Controller
         if ($shop !== session('oauth_shop')) {
             return response()->json(['error' => 'Shop mismatch'], 403);
         }
+
+        if (!$this->service->verifyHmac($request, config('shopify.api_secret'))) {
+            Log::warning('OAuth HMAC verification failed', [
+                'shop' => $shop,
+                'ip' => $request->ip(),
+            ]);
+            return response()->json(['error' => 'HMAC verification failed'], 403);
+        }
     }
 }
