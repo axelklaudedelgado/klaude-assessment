@@ -33,10 +33,24 @@ class ShopifyGraphQLService
         $body = $response->json();
 
         if (isset($body['errors'])) {
-            throw new \Exception('GraphQL errors occurred');
+            $this->handleGraphQLErrors($body['errors']);
         }
 
         return $body['data'];
+    }
+
+    private function handleGraphQLErrors(array $errors): void
+    {
+        foreach ($errors as $error) {
+            $code = $error['extensions']['code'] ?? null;
+            $message = $error['message'] ?? 'Unknown GraphQL error';
+
+            if ($code === 'THROTTLED') {
+                throw new \Exception('GraphQL request was throttled by Shopify');
+            }
+
+            throw new \Exception("GraphQL Error: {$message}");
+        }
     }
 
     protected function getApiPath(): string
