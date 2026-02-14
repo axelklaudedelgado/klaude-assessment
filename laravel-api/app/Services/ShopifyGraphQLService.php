@@ -52,6 +52,13 @@ class ShopifyGraphQLService
                     $attempt++;
                     continue;
                 }
+
+                if (in_array($statusCode, [502, 503, 504]) && $attempt < $this->maxRetries) {
+                    $delay = $this->calculateBackoff($attempt);
+                    usleep($delay);
+                    $attempt++;
+                    continue;
+                }
         
                 $body = $response->json();
         
@@ -93,6 +100,14 @@ class ShopifyGraphQLService
         ]);
 
         $this->shop->update(['is_active' => false]);
+    }
+
+    private function calculateBackoff(int $attempt): int
+    {
+        $baseDelaySeconds = 1;
+        $exponential = $baseDelaySeconds * pow(2, $attempt);
+        $jitterSeconds = rand(0, 100) / 1000;
+        return (int)(($exponential + $jitterSeconds) * 1000000);
     }
 
     protected function getApiPath(): string
