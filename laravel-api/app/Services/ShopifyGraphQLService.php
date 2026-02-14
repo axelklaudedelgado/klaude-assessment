@@ -46,6 +46,12 @@ class ShopifyGraphQLService
                 if ($statusCode === 400) {
                     throw new \Exception('GraphQL query syntax is invalid');
                 }
+
+                if ($statusCode === 429 && $attempt < $this->maxRetries) {
+                    sleep(2);
+                    $attempt++;
+                    continue;
+                }
         
                 $body = $response->json();
         
