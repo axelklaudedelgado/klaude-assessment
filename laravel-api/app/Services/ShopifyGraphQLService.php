@@ -38,6 +38,14 @@ class ShopifyGraphQLService
                     $this->handle401Unauthorized();
                     throw new \Exception('Access token is invalid or has been revoked');
                 }
+
+                if ($statusCode === 403) {
+                    throw new \Exception('Access token lacks required permissions');
+                }
+
+                if ($statusCode === 400) {
+                    throw new \Exception('GraphQL query syntax is invalid');
+                }
         
                 $body = $response->json();
         
