@@ -1,0 +1,30 @@
+# Environment files
+.env
+.env.backup
+.env.production
+/laravel-api/.env
+/webhook-service/.env
+
+# Laravel backend
+/laravel-api/vendor
+/laravel-api/public/build
+/laravel-api/public/hot
+/laravel-api/public/storage
+/laravel-api/storage/*.key
+/laravel-api/storage/pail
+/laravel-api/Homestead.json
+/laravel-api/Homestead.yaml
+
+# Node
+/webhook-service/node_modules
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs 
+.idea
+.vscode
