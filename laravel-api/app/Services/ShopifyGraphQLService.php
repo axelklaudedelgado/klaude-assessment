@@ -120,4 +120,40 @@ class ShopifyGraphQLService
         $version = config('shopify.api_version');
         return "https://{$this->shop->shop_domain}/admin/api/{$version}/graphql.json";
     }
+
+    public function fetchProducts(?string $cursor = null, int $limit = 50): array
+    {
+        $query = <<<'GRAPHQL'
+        query GetProducts($cursor: String, $limit: Int!) {
+          products(first: $limit, after: $cursor) {
+            edges {
+              cursor
+              node {
+                id
+                title
+                vendor
+                status
+                variants(first: 1) {
+                  edges {
+                    node {
+                      price
+                    }
+                  }
+                }
+                updatedAt
+              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          }
+        }
+        GRAPHQL;
+
+        return $this->query($query, [
+            'cursor' => $cursor,
+            'limit' => $limit,
+        ]);
+    }
 }
