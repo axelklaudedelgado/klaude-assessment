@@ -25,8 +25,14 @@ class ShopifySyncService
         while ($hasNextPage) {
             $data = $this->graphql->fetchProducts($cursor);
 
-            foreach ($data['products']['edges'] as $edge) {
-                $node = $edge['node'];
+            $edges = $data['products']['edges'] ?? [];
+
+            foreach ($edges as $edge) {
+                $node = $edge['node'] ?? null;
+
+                if (!$node) {
+                    continue;
+                }
 
                 $shopifyId = $this->extractNumericId($node['id'], 'Product');
                 
