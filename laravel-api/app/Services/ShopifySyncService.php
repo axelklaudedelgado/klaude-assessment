@@ -17,7 +17,18 @@ class ShopifySyncService
 
     public function syncProducts(): int
     {
-        return 0;
+        $cursor = null;
+        $hasNextPage = true;
+        $synced = 0;
+
+        while ($hasNextPage) {
+            $data = $this->graphql->fetchProducts($cursor);
+
+            $hasNextPage = $data['products']['pageInfo']['hasNextPage'] ?? false;
+            $cursor = $data['products']['pageInfo']['endCursor'] ?? null;
+        }
+
+        return $synced;
     }
 
     public function syncOrders(?string $since = null): int
