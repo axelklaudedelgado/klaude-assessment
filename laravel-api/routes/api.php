@@ -10,3 +10,6 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/sync/products', [ShopifyApiController::class, 'syncProducts']);
 Route::post('/sync/orders', [ShopifyApiController::class, 'syncOrders']);
+
+Route::get('/products', [ShopifyApiController::class, 'getProducts']);
+Route::get('/orders', [ShopifyApiController::class, 'getOrders']);
