@@ -2,6 +2,11 @@
 
 A Shopify integration service built with PHP (Laravel) and Node.js. Supports OAuth authentication, GraphQL-based data synchronization, and real-time webhook processing.
 
+**Documentation:**
+
+- [Setup & Usage Guide](README.md) (You are here)
+- [Technical Explanation](EXPLANATION.md) - Implementation decisions
+
 ## Table of Contents
 
 - [Overview](#overview)
