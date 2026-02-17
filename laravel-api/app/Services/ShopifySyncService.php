@@ -99,8 +99,8 @@ class ShopifySyncService
                     [
                         'order_number' => $node['name'] ?? '',
                         'total_price' => $node['totalPriceSet']['shopMoney']['amount'] ?? '0.00',
-                        'financial_status' => $node['displayFinancialStatus'] ?? 'pending',
-                        'fulfillment_status' => $node['displayFulfillmentStatus'] ?? 'unfulfilled',
+                        'financial_status' => strtolower($node['displayFinancialStatus'] ?? 'pending'),
+                        'fulfillment_status' => strtolower($node['displayFulfillmentStatus'] ?? 'unfulfilled'),
                         'shopify_created_at' => $node['createdAt'] ?? null,
                     ]
                 );
